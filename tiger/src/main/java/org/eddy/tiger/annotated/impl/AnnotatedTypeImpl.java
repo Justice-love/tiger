@@ -6,7 +6,11 @@
 package org.eddy.tiger.annotated.impl;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,6 +19,8 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 
+import org.eddy.tiger.util.Reflects;
+
 /**
  * @author Eddy
  *
@@ -22,9 +28,9 @@ import javax.enterprise.inject.spi.AnnotatedType;
 public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 
 	private Class<X> beanClass;
-	private Set<AnnotatedField<X>> annotatedFields = new HashSet<>();
+	private Set<AnnotatedField<? super X>> annotatedFields = new HashSet<>();
 	private Set<AnnotatedConstructor<X>> annotatedConstructors = new HashSet<>();
-	private Set<AnnotatedMethod<X>> annotatedMethods = new HashSet<>();
+	private Set<AnnotatedMethod<? super X>> annotatedMethods = new HashSet<>();
 	/**
 	 * 构造函数
 	 * @creatTime 下午3:44:05
@@ -52,8 +58,10 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	 * @author Eddy
 	 */
 	private void initMethods() {
-		// TODO Auto-generated method stub
-		
+		Set<Method> set = Reflects.getMethods(this.beanClass);
+		for (Method method : set) {
+			annotatedMethods.add(new AnnotatedMethodImpl<X>(method));
+		}
 	}
 
 	/**
@@ -62,8 +70,10 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	 * @author Eddy
 	 */
 	private void initConstructor() {
-		// TODO Auto-generated method stub
-		
+		Set<Constructor<?>> set = Reflects.getConstructors(this.beanClass);
+		for (Constructor<?> constructor : set) {
+			annotatedConstructors.add(new AnnotatedConstructorImpl<X>(constructor));
+		}
 	}
 
 	/**
@@ -72,7 +82,10 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	 * @author Eddy
 	 */
 	private void initFields() {
-		
+		Set<Field> set = Reflects.getFields(this.beanClass);
+		for (Field field : set) {
+			annotatedFields.add(new AnnotatedFieldImpl<X>(field));
+		}
 	}
 
 	/* (non-Javadoc)
@@ -80,8 +93,7 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	 */
 	@Override
 	public Type getBaseType() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.beanClass;
 	}
 
 	/* (non-Javadoc)
@@ -89,8 +101,7 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	 */
 	@Override
 	public Set<Type> getTypeClosure() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	/* (non-Javadoc)
@@ -98,8 +109,7 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	 */
 	@Override
 	public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.beanClass.getAnnotation(annotationType);
 	}
 
 	/* (non-Javadoc)
@@ -107,8 +117,7 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	 */
 	@Override
 	public Set<Annotation> getAnnotations() {
-		// TODO Auto-generated method stub
-		return null;
+		return new HashSet<>(Arrays.asList(this.beanClass.getAnnotations()));
 	}
 
 	/* (non-Javadoc)
@@ -116,8 +125,7 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	 */
 	@Override
 	public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.beanClass.isAnnotationPresent(annotationType);
 	}
 
 	/* (non-Javadoc)
@@ -125,8 +133,7 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	 */
 	@Override
 	public Class<X> getJavaClass() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.beanClass;
 	}
 
 	/* (non-Javadoc)
@@ -134,8 +141,7 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	 */
 	@Override
 	public Set<AnnotatedConstructor<X>> getConstructors() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.annotatedConstructors;
 	}
 
 	/* (non-Javadoc)
@@ -143,8 +149,7 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	 */
 	@Override
 	public Set<AnnotatedMethod<? super X>> getMethods() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.annotatedMethods;
 	}
 
 	/* (non-Javadoc)
@@ -152,8 +157,7 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	 */
 	@Override
 	public Set<AnnotatedField<? super X>> getFields() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.annotatedFields;
 	}
 	
 

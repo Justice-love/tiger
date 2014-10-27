@@ -27,6 +27,7 @@ public class AnnotatedMethodImpl<X> extends AnnotatedCallableImpl<X> implements 
 	public AnnotatedMethodImpl(Method method) {
 		super(method);
 		this.method = method;
+		if (!method.isAccessible()) method.setAccessible(true);
 	}
 	
 	/**

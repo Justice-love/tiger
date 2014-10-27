@@ -40,6 +40,7 @@ public class AnnotatedFieldImpl<X> implements AnnotatedField<X> {
 	 */
 	public AnnotatedFieldImpl(Field field) {
 		this.field = field;
+		if (!field.isAccessible()) field.setAccessible(true);
 	}
 	
 	/* (non-Javadoc)

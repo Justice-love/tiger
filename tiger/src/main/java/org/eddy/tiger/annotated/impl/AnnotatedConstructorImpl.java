@@ -30,6 +30,7 @@ public class AnnotatedConstructorImpl<X> extends AnnotatedCallableImpl<X> implem
 	public AnnotatedConstructorImpl(Constructor constructor) {
 		super(constructor);
 		this.constructor = constructor;
+		if (!constructor.isAccessible()) constructor.setAccessible(true);
 	}
 
 	/*
