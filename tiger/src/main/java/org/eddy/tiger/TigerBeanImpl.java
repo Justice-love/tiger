@@ -20,6 +20,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Named;
 import javax.inject.Qualifier;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eddy.tiger.annotated.impl.AnnotatedTypeImpl;
 import org.eddy.tiger.point.ConstructorInjectionPoint;
 import org.eddy.tiger.point.FieldInjectionPoint;
@@ -310,6 +311,25 @@ public class TigerBeanImpl<T> implements TigerBean<T> {
 	public boolean isAlternative() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eddy.tiger.TigerBean#isRight(java.lang.String, java.lang.reflect.Type)
+	 */
+	@Override
+	public boolean isRight(String name, Type type) {
+		if (StringUtils.isEmpty(name) && null == type) {
+			throw new IllegalArgumentException("参数不能都为空");
+		}
+		if(StringUtils.isEmpty(name) ^ null == type) {
+			if (StringUtils.isEmpty(name)) {
+				return this.getTypes().contains(type);
+			} else {
+				return name.equals(this.getName());
+			}
+		} else {
+			return name.equals(this.getName()) && this.getTypes().contains(type);
+		}
 	}
 
 }

@@ -5,6 +5,8 @@
  */
 package org.eddy.tiger;
 
+import java.lang.reflect.Type;
+
 import javax.enterprise.inject.spi.Bean;
 
 /**
@@ -13,4 +15,5 @@ import javax.enterprise.inject.spi.Bean;
  */
 public interface TigerBean<T> extends Bean<T> {
 
+	boolean isRight(String name, Type type);
 }
