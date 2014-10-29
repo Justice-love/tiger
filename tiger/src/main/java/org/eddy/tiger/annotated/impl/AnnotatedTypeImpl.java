@@ -18,6 +18,7 @@ import javax.enterprise.inject.spi.AnnotatedConstructor;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.inject.Inject;
 
 import org.eddy.tiger.util.Reflects;
 
@@ -41,6 +42,22 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	}
 	
 	/**
+	 * 判断是否为注入点
+	 * @param annos
+	 * @return
+	 * @creatTime 上午9:15:54
+	 * @author Eddy
+	 */
+	private boolean inject(Annotation[] annos) {
+		for (Annotation ann : annos) {
+			if (ann.annotationType().equals(Inject.class)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * 构造函数
 	 * @creatTime 下午3:44:05
 	 * @author Eddy
@@ -60,6 +77,7 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	private void initMethods() {
 		Set<Method> set = Reflects.getMethods(this.beanClass);
 		for (Method method : set) {
+			if(!inject(method.getAnnotations())) continue;
 			annotatedMethods.add(new AnnotatedMethodImpl<X>(method));
 		}
 	}
@@ -72,6 +90,7 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	private void initConstructor() {
 		Set<Constructor<?>> set = Reflects.getConstructors(this.beanClass);
 		for (Constructor<?> constructor : set) {
+			if(!inject(constructor.getAnnotations())) continue;
 			annotatedConstructors.add(new AnnotatedConstructorImpl<X>(constructor));
 		}
 	}
@@ -84,6 +103,7 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	private void initFields() {
 		Set<Field> set = Reflects.getFields(this.beanClass);
 		for (Field field : set) {
+			if(!inject(field.getAnnotations())) continue;
 			annotatedFields.add(new AnnotatedFieldImpl<X>(field));
 		}
 	}

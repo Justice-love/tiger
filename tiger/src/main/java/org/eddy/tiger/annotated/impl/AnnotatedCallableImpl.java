@@ -25,7 +25,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
  * @author Eddy
  * 
  */
-
+@SuppressWarnings("all")
 public abstract class AnnotatedCallableImpl<X> implements AnnotatedCallable<X> {
 	private Member member;
 	private List<AnnotatedParameter<X>> parameters;

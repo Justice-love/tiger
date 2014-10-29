@@ -12,14 +12,24 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedConstructor;
+import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Named;
 import javax.inject.Qualifier;
+
+import org.eddy.tiger.annotated.impl.AnnotatedTypeImpl;
+import org.eddy.tiger.point.ConstructorInjectionPoint;
+import org.eddy.tiger.point.FieldInjectionPoint;
+import org.eddy.tiger.point.MethodInjectionPoint;
 
 /**
  * @author Eddy
  * 
  */
+@SuppressWarnings("all")
 public class TigerBeanImpl<T> implements TigerBean<T> {
 
 	private Class<?> beanClass;
@@ -27,13 +37,68 @@ public class TigerBeanImpl<T> implements TigerBean<T> {
 	private Class<? extends Annotation> scop;
 	private Set<Annotation> qualifiers;
 	private Set<Type> types;
+	private Set<FieldInjectionPoint> fieldInjectionPoints;
+	private Set<ConstructorInjectionPoint> constructorInjectionPoints;
+	private Set<MethodInjectionPoint> methodInjectionPoints;
+	private AnnotatedType<T> type;
 	
-	public TigerBeanImpl(Class<?> beanClass, Class<? extends Annotation> scop) {
+	public TigerBeanImpl(Class<T> beanClass, Class<? extends Annotation> scop) {
 		this.beanClass = beanClass;
 		this.name = createName();
 		this.scop = scop;
 		this.qualifiers = createQualifiers();
 		this.types = createTypes();
+		
+		this.type = new AnnotatedTypeImpl<T>(beanClass);
+		
+		this.fieldInjectionPoints = createFieldInjectionPoints();
+		this.constructorInjectionPoints = createConstructorInjectionPoints();
+		this.methodInjectionPoints = createMethodInjectionPoints();
+	}
+ 
+	/**
+	 * 初始化方法注入点
+	 * @return
+	 * @creatTime 上午8:52:05
+	 * @author Eddy
+	 */
+	private Set<MethodInjectionPoint> createMethodInjectionPoints() {
+		Set<MethodInjectionPoint> result = new HashSet<>();
+		Set<AnnotatedMethod<? super T>> set = type.getMethods();
+		for (AnnotatedMethod<? super T> method : set) {
+			result.add(new MethodInjectionPoint(method));
+		}
+		return result;
+	}
+
+	/**
+	 * 初始化构造函数注入点
+	 * @return
+	 * @creatTime 上午8:51:43
+	 * @author Eddy
+	 */
+	private Set<ConstructorInjectionPoint> createConstructorInjectionPoints() {
+		Set<ConstructorInjectionPoint> result = new HashSet<>();
+		Set<AnnotatedConstructor<T>> set = type.getConstructors();
+		for (AnnotatedConstructor<T> constructor : set) {
+			result.add(new ConstructorInjectionPoint(constructor));
+		}
+		return result;
+	}
+
+	/**
+	 * 初始化field注入点
+	 * @return
+	 * @creatTime 上午8:51:11
+	 * @author Eddy
+	 */
+	private Set<FieldInjectionPoint> createFieldInjectionPoints() {
+		Set<FieldInjectionPoint> result = new HashSet<>();
+		Set<AnnotatedField<? super T>> set = type.getFields();
+		for (AnnotatedField<? super T> field : set) {
+			result.add(new FieldInjectionPoint(field));
+		}
+		return result;
 	}
 
 	/**
@@ -142,8 +207,11 @@ public class TigerBeanImpl<T> implements TigerBean<T> {
 	 */
 	@Override
 	public Set<InjectionPoint> getInjectionPoints() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<InjectionPoint> result = new HashSet<>();
+		result.addAll(this.constructorInjectionPoints);
+		result.addAll(this.fieldInjectionPoints);
+		result.addAll(this.methodInjectionPoints);
+		return result;
 	}
 
 	/*

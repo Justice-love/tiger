@@ -6,9 +6,6 @@
 package org.eddy.tiger.annotated.impl;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Set;
 
@@ -19,6 +16,7 @@ import javax.enterprise.inject.spi.AnnotatedParameter;
  * @author Eddy
  * 
  */
+@SuppressWarnings("all")
 public class AnnotatedParameterImpl<X> implements AnnotatedParameter<X> {
 	private AnnotatedCallable<X> callable;
 	private int index;

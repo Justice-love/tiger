@@ -13,6 +13,7 @@ import javax.enterprise.inject.spi.AnnotatedConstructor;
  * @author Eddy
  * 
  */
+@SuppressWarnings("all")
 public class AnnotatedConstructorImpl<X> extends AnnotatedCallableImpl<X> implements AnnotatedConstructor<X> {
 
 	private Constructor<X> constructor;
