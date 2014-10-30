@@ -10,10 +10,13 @@ import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Qualifier;
+
+import org.eddy.tiger.context.TigerCreationalContext;
 
 /**
  * @author Eddy
@@ -60,6 +63,10 @@ public abstract class AbstractInjectionPoint implements InjectionPoint{
 	public Bean<?> getBean() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public Bean<?> getBean(CreationalContext<?> ctx, Type type) {
+		return (Bean<?>) ((TigerCreationalContext<?>) ctx).get(null, type);
 	}
 
 	/* (non-Javadoc)

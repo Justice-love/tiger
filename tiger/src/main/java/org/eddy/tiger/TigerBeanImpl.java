@@ -22,6 +22,7 @@ import javax.inject.Qualifier;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eddy.tiger.annotated.impl.AnnotatedTypeImpl;
+import org.eddy.tiger.context.TigerCreationalContext;
 import org.eddy.tiger.point.ConstructorInjectionPoint;
 import org.eddy.tiger.point.FieldInjectionPoint;
 import org.eddy.tiger.point.MethodInjectionPoint;
@@ -83,6 +84,9 @@ public class TigerBeanImpl<T> implements TigerBean<T> {
 		Set<AnnotatedConstructor<T>> set = type.getConstructors();
 		for (AnnotatedConstructor<T> constructor : set) {
 			result.add(new ConstructorInjectionPoint(constructor));
+		}
+		if (result.size() > 1) {
+			throw new IllegalArgumentException("可注入的构造函数数目大于1");
 		}
 		return result;
 	}
@@ -234,9 +238,15 @@ public class TigerBeanImpl<T> implements TigerBean<T> {
 	 * .spi.CreationalContext)
 	 */
 	@Override
-	public T create(CreationalContext<T> creationalContext) {
-		// TODO Auto-generated method stub
-		return null;
+	public T create(CreationalContext creationalContext) {
+		TigerBean bean = (TigerBean) ((TigerCreationalContext) creationalContext).get(this.getName());
+		try {
+			return (T) bean.getBeanClass().newInstance();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/*

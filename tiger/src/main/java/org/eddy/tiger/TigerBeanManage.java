@@ -39,36 +39,8 @@ import javax.enterprise.inject.spi.ProducerFactory;
  */
 public abstract class TigerBeanManage implements BeanManager {
 
-	public abstract <T> Bean<T> createBean(Class<T> beanClass);
+	public abstract <T> TigerBean<T> createBean(Class<T> beanClass);
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * javax.enterprise.inject.spi.BeanManager#getReference(javax.enterprise
-	 * .inject.spi.Bean, java.lang.reflect.Type,
-	 * javax.enterprise.context.spi.CreationalContext)
-	 */
-	@Override
-	public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * javax.enterprise.inject.spi.BeanManager#getInjectableReference(javax.
-	 * enterprise.inject.spi.InjectionPoint,
-	 * javax.enterprise.context.spi.CreationalContext)
-	 */
-	@Override
-	public Object getInjectableReference(InjectionPoint ij, CreationalContext<?> ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
