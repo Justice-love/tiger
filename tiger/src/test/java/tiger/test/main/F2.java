@@ -29,10 +29,11 @@ public class F2 {
 	@Inject
 	public F2(Depence depance3) {
 		this.depance3 = depance3;
+		System.out.println("invoke constructor");
 	}
 	
 	public static void main(String[] args) {
-		TigerBeanManage manage = new TigerBeanManageImpl();
+		TigerBeanManage manage = TigerBeanManageImpl.getInstance();
 		TigerBean<F2> bean = manage.createBean(F2.class);
 		manage.createBean(Depence.class);
 		F2 main = (F2) manage.getReference(bean);

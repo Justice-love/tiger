@@ -29,7 +29,7 @@ public class F {
 	
 	@Test
 	public void depence() {
-		TigerBeanManage manage = new TigerBeanManageImpl();
+		TigerBeanManage manage = TigerBeanManageImpl.getInstance();
 		TigerBean<F> bean = manage.createBean(F.class);
 		manage.createBean(Depence.class);
 		F main = (F) manage.getReference(bean);
