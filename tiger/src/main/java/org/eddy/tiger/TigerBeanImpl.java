@@ -6,6 +6,7 @@
 package org.eddy.tiger;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashSet;
@@ -22,6 +23,7 @@ import javax.inject.Qualifier;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eddy.tiger.annotated.impl.AnnotatedTypeImpl;
+import org.eddy.tiger.context.AbstractContext;
 import org.eddy.tiger.context.TigerCreationalContext;
 import org.eddy.tiger.point.ConstructorInjectionPoint;
 import org.eddy.tiger.point.FieldInjectionPoint;
@@ -43,14 +45,15 @@ public class TigerBeanImpl<T> implements TigerBean<T> {
 	private Set<ConstructorInjectionPoint> constructorInjectionPoints;
 	private Set<MethodInjectionPoint> methodInjectionPoints;
 	private AnnotatedType<T> type;
+	private TigerBeanManage manage;
 	
-	public TigerBeanImpl(Class<T> beanClass, Class<? extends Annotation> scop) {
+	public TigerBeanImpl(Class<T> beanClass, Class<? extends Annotation> scop, TigerBeanManage manage) {
 		this.beanClass = beanClass;
 		this.name = createName();
 		this.scop = scop;
 		this.qualifiers = createQualifiers();
 		this.types = createTypes();
-		
+		this.manage = manage;
 		this.type = new AnnotatedTypeImpl<T>(beanClass);
 		
 		this.fieldInjectionPoints = createFieldInjectionPoints();
@@ -241,7 +244,14 @@ public class TigerBeanImpl<T> implements TigerBean<T> {
 	public T create(CreationalContext creationalContext) {
 		TigerBean bean = (TigerBean) ((TigerCreationalContext) creationalContext).get(this.getName());
 		try {
-			return (T) bean.getBeanClass().newInstance();
+			if (bean.isConstructor()) {
+				ConstructorInjectionPoint point = bean.getConstructorInjectionPoint();
+				AbstractContext context = (AbstractContext) manage.getContext(bean.getScope());
+				Object obj = manage.getInjectableReference(point, context.getCreationalContext());
+				return (T) ((Constructor<?>) point.getMember()).newInstance(obj);
+			} else {
+				return (T) bean.getBeanClass().newInstance();
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -340,6 +350,22 @@ public class TigerBeanImpl<T> implements TigerBean<T> {
 		} else {
 			return name.equals(this.getName()) && this.getTypes().contains(type);
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eddy.tiger.TigerBean#isConstructor()
+	 */
+	@Override
+	public boolean isConstructor() {
+		return this.constructorInjectionPoints.size() == 1;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eddy.tiger.TigerBean#getConstructorInjectionPoint()
+	 */
+	@Override
+	public ConstructorInjectionPoint getConstructorInjectionPoint() {
+		return this.constructorInjectionPoints.iterator().next();
 	}
 
 }

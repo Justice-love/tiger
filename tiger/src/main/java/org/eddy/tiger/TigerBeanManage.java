@@ -12,7 +12,6 @@ import java.util.Set;
 
 import javax.el.ELResolver;
 import javax.el.ExpressionFactory;
-import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedField;
@@ -40,6 +39,8 @@ import javax.enterprise.inject.spi.ProducerFactory;
 public abstract class TigerBeanManage implements BeanManager {
 
 	public abstract <T> TigerBean<T> createBean(Class<T> beanClass);
+	
+	public abstract Object getReference(Bean<?> bean);
 	
 	/*
 	 * (non-Javadoc)
@@ -314,17 +315,6 @@ public abstract class TigerBeanManage implements BeanManager {
 	public int getInterceptorBindingHashCode(Annotation interceptorBinding) {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.enterprise.inject.spi.BeanManager#getContext(java.lang.Class)
-	 */
-	@Override
-	public Context getContext(Class<? extends Annotation> scopeType) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/*
