@@ -62,6 +62,9 @@ public abstract class AnnotatedCallableImpl<X> implements AnnotatedCallable<X> {
 			AnnotatedParameter p = new AnnotatedParameterImpl<>(this, i, parameter, annotationSet);
 			parameters.add(p);
 		}
+		if (parameters.size() != 1) {
+			throw new IllegalArgumentException("注入方法或构造函数仅支持单个参数");
+		}
 	}
 
 	/*
@@ -91,7 +94,7 @@ public abstract class AnnotatedCallableImpl<X> implements AnnotatedCallable<X> {
 	 */
 	@Override
 	public Type getBaseType() {
-		throw new UnsupportedOperationException("Not supported yet.");
+		return parameters.get(0).getBaseType();
 	}
 
 	/*
