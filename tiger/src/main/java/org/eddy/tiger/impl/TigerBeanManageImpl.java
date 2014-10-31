@@ -130,8 +130,8 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 	 * @see org.eddy.tiger.TigerBeanManage#getReference(javax.enterprise.inject.spi.Bean)
 	 */
 	@Override
-	public Object getReference(Bean<?> bean) {
-		return getReference(bean, null, null);
+	public <T> T getReference(Bean<T> bean) {
+		return (T) getReference(bean, null, null);
 	}
 
 

@@ -35,7 +35,7 @@ public class F {
 		TigerBean<F> bean = manage.createBean(F.class);
 		manage.createBean(Depence.class);
 		manage.createBean(Pig.class);
-		F main = (F) manage.getReference(bean);
+		F main = manage.getReference(bean);
 		main.getDepance2().test();
 		main.depence.test();
 		main.getDepance3().test();

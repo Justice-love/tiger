@@ -41,7 +41,7 @@ public abstract class TigerBeanManage implements BeanManager {
 
 	public abstract <T> TigerBean<T> createBean(Class<T> beanClass);
 	
-	public abstract Object getReference(Bean<?> bean);
+	public abstract <T> T getReference(Bean<T> bean);
 	
 	public abstract Object[] getInjectableReferenceForCallable(InjectionPoint ij, CreationalContext ctx);
 	
