@@ -25,8 +25,6 @@ public class F {
 	
 	private Depence depance2;
 	
-	
-	
 	@Test
 	public void depence() {
 		TigerBeanManage manage = TigerBeanManageImpl.getInstance();

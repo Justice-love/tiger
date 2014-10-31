@@ -15,7 +15,7 @@ import javax.inject.Named;
 public class Depence {
 
 	public void test() {
-		System.out.println(123);
+		System.out.println("测试");
 	}
 	
 }
