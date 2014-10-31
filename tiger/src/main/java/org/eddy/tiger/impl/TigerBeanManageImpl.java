@@ -9,10 +9,12 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Scope;
@@ -21,6 +23,7 @@ import javax.inject.Singleton;
 import org.eddy.tiger.TigerBean;
 import org.eddy.tiger.TigerBeanImpl;
 import org.eddy.tiger.TigerBeanManage;
+import org.eddy.tiger.annotated.AbstractAnnotatedCallable;
 import org.eddy.tiger.context.AbstractContext;
 import org.eddy.tiger.context.impl.SingletonContext;
 import org.eddy.tiger.point.AbstractInjectionPoint;
@@ -92,14 +95,15 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 				Set<InjectionPoint> points = bean.getInjectionPoints();
 				for (InjectionPoint point : points) {
 					if (point instanceof ConstructorInjectionPoint) continue;
-					Object i = getInjectableReference(point, singleton.getCreationalContext());
 					if (point instanceof FieldInjectionPoint) {
+						Object param = getInjectableReference(point, singleton.getCreationalContext());
 						Field f = (Field) point.getMember();
-						f.set(obj, i);
+						f.set(obj, param);
 					}
 					if (point instanceof MethodInjectionPoint) {
 						Method m = (Method) point.getMember();
-						m.invoke(obj, i);
+						Object[] params = getInjectableReferenceForCallable(point, singleton.getCreationalContext());
+						m.invoke(obj, params);
 					}
 				}
 				return obj;
@@ -118,7 +122,7 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 	@Override
 	public Object getInjectableReference(InjectionPoint ij, CreationalContext ctx) {
 		TigerBean<?> in = (TigerBean<?>) ((AbstractInjectionPoint) ij).getBean(ctx, ij.getType());
-		return in.create(ctx);
+		return in == null? null : in.create(ctx);
 	}
 
 
@@ -140,6 +144,22 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 			return singleton;
 		}
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eddy.tiger.TigerBeanManage#getInjectableReferenceForCallable(javax.enterprise.inject.spi.InjectionPoint, javax.enterprise.context.spi.CreationalContext)
+	 */
+	@Override
+	public Object[] getInjectableReferenceForCallable(InjectionPoint ij, CreationalContext ctx) {
+		AbstractAnnotatedCallable<?> callable = (AbstractAnnotatedCallable<?>) ij.getAnnotated();
+		List<?> params = callable.getParameters();
+		Object[] result = new Object[params.size()];
+		for (Object o : params) {
+			AnnotatedParameter ap = (AnnotatedParameter) o;
+			TigerBean<?> in = (TigerBean<?>) ((AbstractInjectionPoint) ij).getBean(ctx, ap.getBaseType());
+			result[ap.getPosition()] = in == null? null : in.create(ctx);
+		}
+		return result;
 	}
 
 }

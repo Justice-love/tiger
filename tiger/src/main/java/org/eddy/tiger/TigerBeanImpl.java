@@ -247,8 +247,9 @@ public class TigerBeanImpl<T> implements TigerBean<T> {
 			if (bean.isConstructor()) {
 				ConstructorInjectionPoint point = bean.getConstructorInjectionPoint();
 				AbstractContext context = (AbstractContext) manage.getContext(bean.getScope());
-				Object obj = manage.getInjectableReference(point, context.getCreationalContext());
-				return (T) ((Constructor<?>) point.getMember()).newInstance(obj);
+//				Object obj = manage.getInjectableReference(point, context.getCreationalContext());
+				Object[] params = manage.getInjectableReferenceForCallable(point, context.getCreationalContext());
+				return (T) ((Constructor<?>) point.getMember()).newInstance(params);
 			} else {
 				return (T) bean.getBeanClass().newInstance();
 			}

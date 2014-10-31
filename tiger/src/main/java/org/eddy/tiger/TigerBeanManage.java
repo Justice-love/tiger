@@ -36,11 +36,14 @@ import javax.enterprise.inject.spi.ProducerFactory;
  * @author Eddy
  * 
  */
+@SuppressWarnings("all")
 public abstract class TigerBeanManage implements BeanManager {
 
 	public abstract <T> TigerBean<T> createBean(Class<T> beanClass);
 	
 	public abstract Object getReference(Bean<?> bean);
+	
+	public abstract Object[] getInjectableReferenceForCallable(InjectionPoint ij, CreationalContext ctx);
 	
 	/*
 	 * (non-Javadoc)

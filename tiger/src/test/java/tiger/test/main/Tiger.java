@@ -16,10 +16,12 @@ import org.eddy.tiger.impl.TigerBeanManageImpl;
  * @author Eddy
  *
  */
-@Named("f2")
-public class F2 {
+@Named("tiger")
+public class Tiger {
 	
 	private Depence depance3;
+	
+	private Pig pig;
 	
 	/**
 	 * 构造函数
@@ -27,17 +29,20 @@ public class F2 {
 	 * @author Eddy
 	 */
 	@Inject
-	public F2(Depence depance3) {
+	public Tiger(Depence depance3, Pig pig) {
 		this.depance3 = depance3;
+		this.pig = pig;
 		System.out.println("invoke constructor");
 	}
 	
 	public static void main(String[] args) {
 		TigerBeanManage manage = TigerBeanManageImpl.getInstance();
-		TigerBean<F2> bean = manage.createBean(F2.class);
+		TigerBean<Tiger> bean = manage.createBean(Tiger.class);
 		manage.createBean(Depence.class);
-		F2 main = (F2) manage.getReference(bean);
+		manage.createBean(Pig.class);
+		Tiger main = (Tiger) manage.getReference(bean);
 		main.getDepance3().test();
+		main.getPig().pig();
 	}
 
 
@@ -47,6 +52,14 @@ public class F2 {
 
 	public void setDepance3(Depence depance3) {
 		this.depance3 = depance3;
+	}
+
+	public Pig getPig() {
+		return pig;
+	}
+
+	public void setPig(Pig pig) {
+		this.pig = pig;
 	}
 	
 }

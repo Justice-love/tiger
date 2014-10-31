@@ -21,12 +21,14 @@ import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
 
+import org.eddy.tiger.annotated.AbstractAnnotatedCallable;
+
 /**
  * @author Eddy
  * 
  */
 @SuppressWarnings("all")
-public abstract class AnnotatedCallableImpl<X> implements AnnotatedCallable<X> {
+public abstract class AnnotatedCallableImpl<X> extends AbstractAnnotatedCallable<X> {
 	private Member member;
 	private List<AnnotatedParameter<X>> parameters;
 
@@ -62,9 +64,10 @@ public abstract class AnnotatedCallableImpl<X> implements AnnotatedCallable<X> {
 			AnnotatedParameter p = new AnnotatedParameterImpl<>(this, i, parameter, annotationSet);
 			parameters.add(p);
 		}
-		if (parameters.size() != 1) {
-			throw new IllegalArgumentException("注入方法或构造函数仅支持单个参数");
-		}
+		//#1 去除方法或构造函数注入参数仅为1的限制
+//		if (parameters.size() != 1) {
+//			throw new IllegalArgumentException("注入方法或构造函数仅支持单个参数");
+//		}
 	}
 
 	/*
@@ -162,6 +165,18 @@ public abstract class AnnotatedCallableImpl<X> implements AnnotatedCallable<X> {
 	@Override
 	public List<AnnotatedParameter<X>> getParameters() {
 		return this.parameters;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eddy.tiger.annotated.AbstractAnnotatedCallable#getBaseTypeForSet()
+	 */
+	@Override
+	public Set<Type> getBaseTypeForSet() {
+		Set<Type> result = new HashSet<>();
+		for (AnnotatedParameter<X> param : parameters) {
+			result.add(param.getBaseType());
+		}
+		return result;
 	}
 
 }
