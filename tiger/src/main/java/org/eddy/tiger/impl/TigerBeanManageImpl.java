@@ -40,12 +40,6 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 
 	AbstractContext singleton = new SingletonContext();
 	
-	private static TigerBeanManage manage = new TigerBeanManageImpl();
-	
-	public static TigerBeanManage getInstance() {
-		return manage;
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 

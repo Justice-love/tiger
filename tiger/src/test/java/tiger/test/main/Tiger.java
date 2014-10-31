@@ -36,13 +36,13 @@ public class Tiger {
 	}
 	
 	public static void main(String[] args) {
-		TigerBeanManage manage = TigerBeanManageImpl.getInstance();
+		TigerBeanManage manage = new TigerBeanManageImpl();
 		TigerBean<Tiger> bean = manage.createBean(Tiger.class);
 		manage.createBean(Depence.class);
 		manage.createBean(Pig.class);
-		Tiger main = manage.getReference(bean);
-		main.getDepance3().test();
-		main.getPig().pig();
+		Tiger tiger = manage.getReference(bean);
+		tiger.getDepance3().test();
+		tiger.getPig().pig();
 	}
 
 

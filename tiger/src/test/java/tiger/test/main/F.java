@@ -31,7 +31,7 @@ public class F {
 
 	@Test
 	public void depence() {
-		TigerBeanManage manage = TigerBeanManageImpl.getInstance();
+		TigerBeanManage manage = new TigerBeanManageImpl();
 		TigerBean<F> bean = manage.createBean(F.class);
 		manage.createBean(Depence.class);
 		manage.createBean(Pig.class);
