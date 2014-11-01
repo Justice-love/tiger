@@ -44,6 +44,11 @@ public class RequestTest {
 		@Override
 		public void run() {
 			TigerBean<Cat> bean = manage.createBean(Cat.class);
+			TigerBean<Dog> dogB = manage.createBean(Dog.class);
+			Cat cat = manage.getReference(bean);
+			Dog dog = manage.getReference(dogB);
+			cat.cat();
+			dog.dog();
 		}
 	}
 }

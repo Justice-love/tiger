@@ -100,27 +100,26 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 	public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> ctx) {
 		try {
 			Class<? extends Annotation> scop = bean.getScope();
-			if (Singleton.class.equals(scop)) {
-				Object obj = getContext(scop).get(bean);
-				Set<InjectionPoint> points = bean.getInjectionPoints();
-				for (InjectionPoint point : points) {
-					if (point instanceof ConstructorInjectionPoint)
-						continue;
-					if (point instanceof FieldInjectionPoint) {
-						Object param = getInjectableReference(point, ((AbstractContext)getContext(scop)).getCreationalContext());
-						Field f = (Field) point.getMember();
-						f.set(obj, param);
-					}
-					if (point instanceof MethodInjectionPoint) {
-						Method m = (Method) point.getMember();
-						Object[] params = getInjectableReferenceForCallable(point, ((AbstractContext)getContext(scop)).getCreationalContext());
-						m.invoke(obj, params);
-					}
+			AbstractContext con = (AbstractContext)getContext(scop);
+			if (null == con) return null;
+			Object obj = con.get(bean);
+			Set<InjectionPoint> points = bean.getInjectionPoints();
+			for (InjectionPoint point : points) {
+				if (point instanceof ConstructorInjectionPoint)
+					continue;
+				if (point instanceof FieldInjectionPoint) {
+					Object param = getInjectableReference(point, con.getCreationalContext());
+					Field f = (Field) point.getMember();
+					f.set(obj, param);
 				}
-				return obj;
-			} else {
-				return null;
+				if (point instanceof MethodInjectionPoint) {
+					Method m = (Method) point.getMember();
+					Object[] params = getInjectableReferenceForCallable(point, con.getCreationalContext());
+					m.invoke(obj, params);
+				}
 			}
+			return obj;
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
