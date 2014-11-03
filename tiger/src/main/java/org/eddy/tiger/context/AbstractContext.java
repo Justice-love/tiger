@@ -85,6 +85,6 @@ public abstract class AbstractContext implements Context {
 	 */
 	@Override
 	public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
-		return contextual.create(creationalContext);
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 }
