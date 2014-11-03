@@ -74,4 +74,12 @@ public class RequestContext extends AbstractContext {
 	public CreationalContext<?> getCreationalContext() {
 		return this.context;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.eddy.tiger.context.AbstractContext#getByName(java.lang.String)
+	 */
+	@Override
+	public TigerBean<?> getByName(String name) {
+		return context.get(name);
+	}
 }

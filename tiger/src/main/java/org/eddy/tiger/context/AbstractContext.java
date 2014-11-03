@@ -39,6 +39,15 @@ public abstract class AbstractContext implements Context {
 	public AbstractContext(Class<? extends Annotation> scop) {
 		this.scop = scop;
 	}
+	
+	/**
+	 * 通过bean name 获取bean
+	 * @param name
+	 * @return
+	 * @creatTime 下午4:07:21
+	 * @author Eddy
+	 */
+	public abstract TigerBean<?> getByName(String name);
 
 	/**
 	 * 添加bean

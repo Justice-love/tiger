@@ -55,13 +55,19 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 		// 生成TigerBean
 		TigerBean<T> bean = new TigerBeanImpl<>(beanClass, scop, this);
 		if (scop.equals(Singleton.class)) {
+			checkBeanName(bean, singleton);
 			singleton.addBean(bean);
 		} else if (scop.equals(Request.class)){
+			checkBeanName(bean, request);
 			request.addBean(bean);
 		}
 		return bean;
 	}
 
+	private <T> void checkBeanName(TigerBean<T> bean, AbstractContext context) {
+		TigerBean<?> b = context.getByName(bean.getName());
+		if (null != b) throw new IllegalArgumentException("bean名字重复");
+	}
 	/**
 	 * 获取scop属性
 	 * 
@@ -100,8 +106,7 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 			Set<InjectionPoint> points = bean.getInjectionPoints();
 			for (InjectionPoint point : points) {
 				if(!checkPoint(point)) continue;
-//				if (point instanceof ConstructorInjectionPoint)
-//					continue;
+				updatePointState(point);
 				if (point instanceof FieldInjectionPoint) {
 					Object param = getInjectableReference(point, con.getCreationalContext());
 					Field f = (Field) point.getMember();
@@ -126,6 +131,17 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 	}
 
 	/**
+	 * 更新注入点状态
+	 * @param point
+	 * @creatTime 下午3:56:39
+	 * @author Eddy
+	 */
+	private void updatePointState(InjectionPoint point) {
+		AbstractInjectionPoint p = (AbstractInjectionPoint) point;
+		p.setState(AbstractInjectionPoint.PENDING);
+	}
+
+	/**
 	 * 检查注入点状态方法
 	 * @param point
 	 * @return true:可以执行注入, false: 不可执行注入
@@ -137,7 +153,6 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 		if (AbstractInjectionPoint.CLOSED == p.getState() || AbstractInjectionPoint.PENDING == p.getState()) {
 			return false;
 		} else if (AbstractInjectionPoint.OPEN == p.getState()) {
-			p.setState(AbstractInjectionPoint.PENDING);
 			return true;
 		}
 		return false;
