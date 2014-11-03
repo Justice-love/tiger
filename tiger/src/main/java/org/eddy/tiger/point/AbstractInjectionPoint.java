@@ -26,8 +26,33 @@ public abstract class AbstractInjectionPoint implements InjectionPoint{
 
 	protected Annotated annotated;
 	
+	/**
+	 * 开启状态
+	 */
+	public static final int OPEN = 0;
+	
+	/**
+	 * 等待注入状态
+	 */
+	public static final int PENDING = 1;
+	
+	/**
+	 * 关闭状态
+	 */
+	public static final int CLOSED = 2;
+	
+	/**
+	 * 注入点状态
+	 */
+	private int state = OPEN;
+	
 	public AbstractInjectionPoint(Annotated annotated) {
 		this.annotated = annotated;
+	}
+	
+	public AbstractInjectionPoint(Annotated annotated, int state) {
+		this.annotated = annotated;
+		this.state = state;
 	}
 	
 	/* (non-Javadoc)
@@ -93,6 +118,14 @@ public abstract class AbstractInjectionPoint implements InjectionPoint{
 	public boolean isTransient() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
 	}
 
 }

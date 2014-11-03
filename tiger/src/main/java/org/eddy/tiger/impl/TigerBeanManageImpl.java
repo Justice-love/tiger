@@ -42,7 +42,7 @@ import org.eddy.tiger.point.MethodInjectionPoint;
 public class TigerBeanManageImpl extends TigerBeanManage {
 
 	AbstractContext singleton = new SingletonContext();
-//	ThreadLocal<AbstractContext> request = new ThreadLocal<>();
+
 	AbstractContext request = new RequestContext();
 	/*
 	 * (non-Javadoc)
@@ -99,17 +99,22 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 			Object obj = con.get(bean);
 			Set<InjectionPoint> points = bean.getInjectionPoints();
 			for (InjectionPoint point : points) {
-				if (point instanceof ConstructorInjectionPoint)
-					continue;
+				if(!checkPoint(point)) continue;
+//				if (point instanceof ConstructorInjectionPoint)
+//					continue;
 				if (point instanceof FieldInjectionPoint) {
 					Object param = getInjectableReference(point, con.getCreationalContext());
 					Field f = (Field) point.getMember();
 					f.set(obj, param);
+					//更新注入点状态
+					((AbstractInjectionPoint) point).setState(AbstractInjectionPoint.CLOSED);
 				}
 				if (point instanceof MethodInjectionPoint) {
 					Method m = (Method) point.getMember();
 					Object[] params = getInjectableReferenceForCallable(point, con.getCreationalContext());
 					m.invoke(obj, params);
+					//更新注入点状态
+					((AbstractInjectionPoint) point).setState(AbstractInjectionPoint.CLOSED);
 				}
 			}
 			return obj;
@@ -118,6 +123,24 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	/**
+	 * 检查注入点状态方法
+	 * @param point
+	 * @return true:可以执行注入, false: 不可执行注入
+	 * @creatTime 下午1:55:16
+	 * @author Eddy
+	 */
+	private boolean checkPoint(InjectionPoint point) {
+		AbstractInjectionPoint p = (AbstractInjectionPoint) point;
+		if (AbstractInjectionPoint.CLOSED == p.getState() || AbstractInjectionPoint.PENDING == p.getState()) {
+			return false;
+		} else if (AbstractInjectionPoint.OPEN == p.getState()) {
+			p.setState(AbstractInjectionPoint.PENDING);
+			return true;
+		}
+		return false;
 	}
 
 	/*

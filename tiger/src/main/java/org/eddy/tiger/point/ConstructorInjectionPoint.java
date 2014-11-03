@@ -23,7 +23,7 @@ public class ConstructorInjectionPoint extends AbstractInjectionPoint {
 	 * @author Eddy
 	 */
 	public ConstructorInjectionPoint(Annotated annotated) {
-		super(annotated);
+		super(annotated, AbstractInjectionPoint.CLOSED);
 		// TODO Auto-generated constructor stub
 	}
 
