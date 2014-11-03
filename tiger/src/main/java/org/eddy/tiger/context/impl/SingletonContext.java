@@ -45,12 +45,12 @@ public class SingletonContext extends AbstractContext {
 	 */
 	@Override
 	public <T> T get(Contextual<T> contextual) {
-		Object result = cache.get(contextual);
+		T result = (T) cache.get(contextual);
 		if (result == null) {
 			result = contextual.create((CreationalContext) context);
 			cache.put(contextual, result);
 		}
-		return (T) result;
+		return result;
 	}
 
 	/* (non-Javadoc)

@@ -5,6 +5,9 @@
  */
 package org.eddy.tiger.context.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.inject.Singleton;
@@ -25,6 +28,10 @@ public class RequestContext extends AbstractContext {
 	private TigerCreationalContext<TigerBean<?>> context = new CreationalContextImpl<>(this);
 	
 	/**
+	 * 实例缓存对象
+	 */
+	private ThreadLocal<Map<Contextual, Object>> local= new ThreadLocal<Map<Contextual, Object>>();
+	/**
 	 * 构造函数
 	 * @creatTime 下午1:14:54
 	 * @author Eddy
@@ -38,7 +45,17 @@ public class RequestContext extends AbstractContext {
 	 */
 	@Override
 	public <T> T get(Contextual<T> contextual) {
-		return contextual.create((CreationalContext) context);
+		Map<Contextual, Object> cache = local.get();
+		if (null == cache) {
+			cache = new HashMap<>();
+			local.set(cache);
+		}
+		T result = (T) cache.get(contextual);
+		if (result == null) {
+			result = contextual.create((CreationalContext) context);
+			cache.put(contextual, result);
+		}
+		return result;
 	}
 
 	/* (non-Javadoc)

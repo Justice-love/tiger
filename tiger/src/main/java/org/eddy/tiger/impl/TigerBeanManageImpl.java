@@ -42,9 +42,8 @@ import org.eddy.tiger.point.MethodInjectionPoint;
 public class TigerBeanManageImpl extends TigerBeanManage {
 
 	AbstractContext singleton = new SingletonContext();
-
-	ThreadLocal<AbstractContext> request = new ThreadLocal<>();
-
+//	ThreadLocal<AbstractContext> request = new ThreadLocal<>();
+	AbstractContext request = new RequestContext();
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -55,16 +54,10 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 		Class<? extends Annotation> scop = getScop(beanClass);
 		// 生成TigerBean
 		TigerBean<T> bean = new TigerBeanImpl<>(beanClass, scop, this);
-
 		if (scop.equals(Singleton.class)) {
 			singleton.addBean(bean);
 		} else if (scop.equals(Request.class)){
-			AbstractContext re = request.get();
-			if (re == null) {
-				re = new RequestContext();
-				request.set(re);
-			}
-			re.addBean(bean);
+			request.addBean(bean);
 		}
 		return bean;
 	}
@@ -164,14 +157,7 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 		if (Singleton.class.equals(scopeType)) {
 			return singleton;
 		} else if (Request.class.equals(scopeType)) {
-			AbstractContext re = request.get();
-			if (re == null) {
-				re = new RequestContext();
-				request.set(re);
-				return re;
-			} else {
-				return re;
-			}
+			return request;
 		}
 		return null;
 	}
