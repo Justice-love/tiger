@@ -22,7 +22,7 @@ import org.eddy.tiger.context.TigerCreationalContext;
 @SuppressWarnings("all")
 public class RequestContext extends AbstractContext {
 
-	private TigerCreationalContext<TigerBean<?>> context = new CreationalContextImpl<>();
+	private TigerCreationalContext<TigerBean<?>> context = new CreationalContextImpl<>(this);
 	
 	/**
 	 * 构造函数

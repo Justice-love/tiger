@@ -26,6 +26,7 @@ import org.eddy.tiger.TigerBeanManage;
 import org.eddy.tiger.annotated.AbstractAnnotatedCallable;
 import org.eddy.tiger.annotated.Request;
 import org.eddy.tiger.context.AbstractContext;
+import org.eddy.tiger.context.TigerCreationalContext;
 import org.eddy.tiger.context.impl.RequestContext;
 import org.eddy.tiger.context.impl.SingletonContext;
 import org.eddy.tiger.point.AbstractInjectionPoint;
@@ -101,7 +102,7 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 		try {
 			Class<? extends Annotation> scop = bean.getScope();
 			AbstractContext con = (AbstractContext)getContext(scop);
-			if (null == con) return null;
+			if (null == con) throw new IllegalArgumentException("未实现的scop");
 			Object obj = con.get(bean);
 			Set<InjectionPoint> points = bean.getInjectionPoints();
 			for (InjectionPoint point : points) {
@@ -137,7 +138,8 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 	@Override
 	public Object getInjectableReference(InjectionPoint ij, CreationalContext ctx) {
 		TigerBean<?> in = (TigerBean<?>) ((AbstractInjectionPoint) ij).getBean(ctx, ij.getType());
-		return in == null ? null : in.create(ctx);
+		TigerCreationalContext context = (TigerCreationalContext) ctx;
+		return in == null ? null : context.getContext().get(in);
 	}
 
 	/*
@@ -187,10 +189,11 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 		AbstractAnnotatedCallable<?> callable = (AbstractAnnotatedCallable<?>) ij.getAnnotated();
 		List<?> params = callable.getParameters();
 		Object[] result = new Object[params.size()];
+		TigerCreationalContext context = (TigerCreationalContext) ctx;
 		for (Object o : params) {
 			AnnotatedParameter ap = (AnnotatedParameter) o;
 			TigerBean<?> in = (TigerBean<?>) ((AbstractInjectionPoint) ij).getBean(ctx, ap.getBaseType());
-			result[ap.getPosition()] = in == null ? null : in.create(ctx);
+			result[ap.getPosition()] = in == null ? null : context.getContext().get(in);
 		}
 		return result;
 	}

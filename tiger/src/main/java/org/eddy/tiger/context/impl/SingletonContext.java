@@ -5,9 +5,11 @@
  */
 package org.eddy.tiger.context.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
 import javax.inject.Singleton;
 
 import org.eddy.tiger.TigerBean;
@@ -22,7 +24,9 @@ import org.eddy.tiger.context.TigerCreationalContext;
 @SuppressWarnings("all")
 public class SingletonContext extends AbstractContext {
 
-	private TigerCreationalContext<TigerBean<?>> context = new CreationalContextImpl<>();
+	private TigerCreationalContext<TigerBean<?>> context = new CreationalContextImpl<>(this);
+	
+	private Map<Contextual, Object> cache = new HashMap<>();
 	
 	/**
 	 * 构造函数

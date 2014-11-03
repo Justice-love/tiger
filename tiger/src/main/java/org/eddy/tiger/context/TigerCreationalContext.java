@@ -18,4 +18,6 @@ public interface TigerCreationalContext<T> extends CreationalContext<T> {
 	T get(String name);
 	
 	T get(String name, Type type);
+	
+	AbstractContext getContext();
 }

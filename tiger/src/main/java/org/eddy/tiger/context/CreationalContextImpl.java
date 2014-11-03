@@ -19,6 +19,16 @@ public class CreationalContextImpl<T> implements TigerCreationalContext<T> {
 
 	private Set<T> incompleteInstances = new HashSet<>();
 
+	private AbstractContext context;
+	
+	/**
+	 * 构造函数
+	 * @creatTime 上午9:18:42
+	 * @author Eddy
+	 */
+	public CreationalContextImpl(AbstractContext context) {
+		this.context = context;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -69,6 +79,14 @@ public class CreationalContextImpl<T> implements TigerCreationalContext<T> {
 			}
 		}
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eddy.tiger.context.TigerCreationalContext#getContext()
+	 */
+	@Override
+	public AbstractContext getContext() {
+		return this.context;
 	}
 
 }
