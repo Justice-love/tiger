@@ -132,7 +132,7 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 	public Object getInjectableReference(InjectionPoint ij, CreationalContext ctx) {
 		TigerBean<?> in = (TigerBean<?>) ((AbstractInjectionPoint) ij).getBean(ctx, ij.getType());
 		TigerCreationalContext context = (TigerCreationalContext) ctx;
-		return in == null ? null : context.getContext().get(in);
+		return in == null ? null : getReference(in);
 	}
 
 	/*
@@ -179,7 +179,7 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 		for (Object o : params) {
 			AnnotatedParameter ap = (AnnotatedParameter) o;
 			TigerBean<?> in = (TigerBean<?>) ((AbstractInjectionPoint) ij).getBean(ctx, ap.getBaseType());
-			result[ap.getPosition()] = in == null ? null : context.getContext().get(in);
+			result[ap.getPosition()] = in == null ? null : getReference(in);
 		}
 		return result;
 	}
