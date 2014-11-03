@@ -368,5 +368,30 @@ public class TigerBeanImpl<T> implements TigerBean<T> {
 	public ConstructorInjectionPoint getConstructorInjectionPoint() {
 		return this.constructorInjectionPoints.iterator().next();
 	}
+	
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return this.name.hashCode();
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		TigerBeanImpl o = (TigerBeanImpl) obj;
+		if (this == obj) {
+			return true;
+		} else if (o == null) {
+			return false;
+		} else if (this.name.equals(o.getName())) {
+			return true;
+		}
+		return false;
+	}
 
 }
