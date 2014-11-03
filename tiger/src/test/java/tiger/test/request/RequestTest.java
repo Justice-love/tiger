@@ -47,6 +47,8 @@ public class RequestTest {
 			TigerBean<Dog> dogB = manage.createBean(Dog.class);
 			Cat cat = manage.getReference(bean);
 			Dog dog = manage.getReference(dogB);
+			Dog dog2 = manage.getReference(dogB);
+			System.out.println(dog == dog2);
 			cat.cat();
 			dog.dog();
 		}
