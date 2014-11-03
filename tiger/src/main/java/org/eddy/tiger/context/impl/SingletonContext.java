@@ -26,6 +26,9 @@ public class SingletonContext extends AbstractContext {
 
 	private TigerCreationalContext<TigerBean<?>> context = new CreationalContextImpl<>(this);
 	
+	/**
+	 * 实例缓存对象
+	 */
 	private Map<Contextual, Object> cache = new HashMap<>();
 	
 	/**

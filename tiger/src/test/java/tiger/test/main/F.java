@@ -36,6 +36,8 @@ public class F {
 		manage.createBean(Depence.class);
 		manage.createBean(Pig.class);
 		F main = manage.getReference(bean);
+		F f = manage.getReference(bean);
+		System.out.println(main == f);
 		main.getDepance2().test();
 		main.depence.test();
 		main.getDepance3().test();
