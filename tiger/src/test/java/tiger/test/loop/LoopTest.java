@@ -20,7 +20,7 @@ public class LoopTest {
 	public void test() {
 		TigerBeanManage manage = new TigerBeanManageImpl();
 		TigerBean<Bear> bearBean = manage.createBean(Bear.class);
-		TigerBean<Snake> snakeBean = manage.createBean(Snake.class);
+		manage.createBean(Snake.class);
 		Bear bear = manage.getReference(bearBean);
 		bear.bear();
 	}

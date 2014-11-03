@@ -21,7 +21,8 @@ public class Bear {
 	private Snake snake;
 	
 	public void bear() {
-		snake.snake();
+		System.out.println("snake is not null: " + (snake == null));
 		System.out.println("bear");
+		snake.snake();
 	}
 }
