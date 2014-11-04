@@ -5,6 +5,7 @@
  */
 package tiger.test.request;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.eddy.tiger.annotated.Request;
@@ -17,8 +18,11 @@ import org.eddy.tiger.annotated.Request;
 @Request
 public class Dog {
 
+	@Inject
+	private Cat cat;
 	
 	public void dog() {
 		System.out.println("dog");
+		cat.cat();
 	}
 }

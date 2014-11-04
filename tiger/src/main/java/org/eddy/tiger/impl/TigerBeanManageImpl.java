@@ -106,24 +106,24 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 			Set<InjectionPoint> points = bean.getInjectionPoints();
 			for (InjectionPoint point : points) {
 				if(!checkPoint(point)) continue;
+				//更新注入点状态
 				updatePointState(point);
 				if (point instanceof FieldInjectionPoint) {
 					Object param = getInjectableReference(point, con.getCreationalContext());
 					Field f = (Field) point.getMember();
 					f.set(obj, param);
 					//更新注入点状态
-					((AbstractInjectionPoint) point).setState(AbstractInjectionPoint.CLOSED);
+					((AbstractInjectionPoint) point).setState(AbstractInjectionPoint.OPEN);
 				}
 				if (point instanceof MethodInjectionPoint) {
 					Method m = (Method) point.getMember();
 					Object[] params = getInjectableReferenceForCallable(point, con.getCreationalContext());
 					m.invoke(obj, params);
 					//更新注入点状态
-					((AbstractInjectionPoint) point).setState(AbstractInjectionPoint.CLOSED);
+					((AbstractInjectionPoint) point).setState(AbstractInjectionPoint.OPEN);
 				}
 			}
 			return obj;
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

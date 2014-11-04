@@ -15,12 +15,18 @@ import org.eddy.tiger.impl.TigerBeanManageImpl;
  */
 public class RequestTest {
 
+	static TigerBean<Cat> bean;
 	
-	public static void main(String[] args) {
+	static TigerBean<Dog> dogB;
+	
+	public static void main(String[] args) throws InterruptedException {
 		TigerBeanManage manage = new TigerBeanManageImpl();
+		bean = manage.createBean(Cat.class);
+		dogB = manage.createBean(Dog.class);
 		Thread t1 = new RequestThread(manage);
 		Thread t2 = new RequestThread(manage);
 		t1.start();
+		Thread.sleep(1000);
 		t2.start();
 	}
 	
@@ -43,8 +49,6 @@ public class RequestTest {
 		 */
 		@Override
 		public void run() {
-			TigerBean<Cat> bean = manage.createBean(Cat.class);
-			TigerBean<Dog> dogB = manage.createBean(Dog.class);
 			Cat cat = manage.getReference(bean);
 			Dog dog = manage.getReference(dogB);
 			Dog dog2 = manage.getReference(dogB);
