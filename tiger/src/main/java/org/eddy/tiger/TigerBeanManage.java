@@ -74,17 +74,6 @@ public abstract class TigerBeanManage implements BeanManager {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see javax.enterprise.inject.spi.BeanManager#getBeans(java.lang.String)
-	 */
-	@Override
-	public Set<Bean<?>> getBeans(String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see
 	 * javax.enterprise.inject.spi.BeanManager#getPassivationCapableBean(java
 	 * .lang.String)
