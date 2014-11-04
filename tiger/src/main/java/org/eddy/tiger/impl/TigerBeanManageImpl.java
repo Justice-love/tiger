@@ -112,14 +112,14 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 					Object param = getInjectableReference(point, con.getCreationalContext());
 					Field f = (Field) point.getMember();
 					f.set(obj, param);
-					//更新注入点状态
+					//重新释放注入点, 以便后续使用
 					((AbstractInjectionPoint) point).setState(AbstractInjectionPoint.OPEN);
 				}
 				if (point instanceof MethodInjectionPoint) {
 					Method m = (Method) point.getMember();
 					Object[] params = getInjectableReferenceForCallable(point, con.getCreationalContext());
 					m.invoke(obj, params);
-					//更新注入点状态
+					//重新释放注入点, 以便后续使用
 					((AbstractInjectionPoint) point).setState(AbstractInjectionPoint.OPEN);
 				}
 			}
@@ -220,6 +220,15 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 			result[ap.getPosition()] = in == null ? null : getReference(in);
 		}
 		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.enterprise.inject.spi.BeanManager#getBeans(java.lang.String)
+	 */
+	@Override
+	public Set<Bean<?>> getBeans(String name) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
