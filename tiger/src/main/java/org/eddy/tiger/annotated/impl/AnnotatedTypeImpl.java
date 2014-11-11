@@ -19,6 +19,7 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.eddy.tiger.util.Reflects;
 
@@ -42,7 +43,7 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	}
 	
 	/**
-	 * 判断是否为注入点
+	 * 判断是否为{@code Inject}}注入点
 	 * @param annos
 	 * @return
 	 * @creatTime 上午9:15:54
@@ -51,6 +52,22 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	private boolean inject(Annotation[] annos) {
 		for (Annotation ann : annos) {
 			if (ann.annotationType().equals(Inject.class)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * 判断是否为{@code Named}}注入点
+	 * @param annos
+	 * @return
+	 * @creatTime 下午8:07:16
+	 * @author Eddy
+	 */
+	private boolean named(Annotation[] annos) {
+		for (Annotation ann : annos) {
+			if (ann.annotationType().equals(Named.class)) {
 				return true;
 			}
 		}
@@ -103,9 +120,28 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	private void initFields() {
 		Set<Field> set = Reflects.getFields(this.beanClass);
 		for (Field field : set) {
-			if(!inject(field.getAnnotations())) continue;
-			annotatedFields.add(new AnnotatedFieldImpl<X>(field));
+			if (named(field.getAnnotations())) {
+				annotatedFields.add(new AnnotatedFieldImpl<X>(field, getName(field.getAnnotations())));
+			} else if (inject(field.getAnnotations())) {
+				annotatedFields.add(new AnnotatedFieldImpl<X>(field));
+			}
 		}
+	}
+
+	/**
+	 * 获取注入点名称
+	 * @param annotations
+	 * @return
+	 * @creatTime 下午8:11:57
+	 * @author Eddy
+	 */
+	private String getName(Annotation[] annotations) {
+		for (Annotation ann : annotations) {
+			if (ann.annotationType().equals(Named.class)) {
+				return ((Named) ann).value();
+			}
+		}
+		return "";
 	}
 
 	/* (non-Javadoc)

@@ -16,13 +16,18 @@ import java.util.Set;
 import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedType;
 
+import org.apache.commons.lang3.StringUtils;
+import org.eddy.tiger.annotated.AnnotatedName;
+
 /**
  * @author Eddy
  *
  */
-public class AnnotatedFieldImpl<X> implements AnnotatedField<X> {
+public class AnnotatedFieldImpl<X> implements AnnotatedField<X>, AnnotatedName {
 
 	private Field field;
+	
+	private String name;
 	
 	/**
 	 * 构造函数
@@ -39,6 +44,18 @@ public class AnnotatedFieldImpl<X> implements AnnotatedField<X> {
 	 * @author Eddy
 	 */
 	public AnnotatedFieldImpl(Field field) {
+		this.field = field;
+		if (!field.isAccessible()) field.setAccessible(true);
+	}
+	
+	/**
+	 * 构造函数
+	 * @param field
+	 * @creatTime 下午8:05:45
+	 * @author Eddy
+	 */
+	public AnnotatedFieldImpl(Field field, String name) {
+		this.name = name;
 		this.field = field;
 		if (!field.isAccessible()) field.setAccessible(true);
 	}
@@ -106,6 +123,30 @@ public class AnnotatedFieldImpl<X> implements AnnotatedField<X> {
 	@Override
 	public Field getJavaMember() {
 		return this.field;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eddy.tiger.annotated.AnnotatedName#getAnnotatedName()
+	 */
+	@Override
+	public String getAnnotatedName() {
+		return this.name;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eddy.tiger.annotated.AnnotatedName#setAnnotatedName(java.lang.String)
+	 */
+	@Override
+	public void setAnnotatedName(String name) {
+		this.name = name;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eddy.tiger.annotated.AnnotatedName#isNamed()
+	 */
+	@Override
+	public boolean isNamed() {
+		return StringUtils.isEmpty(this.name);
 	}
 
 }
