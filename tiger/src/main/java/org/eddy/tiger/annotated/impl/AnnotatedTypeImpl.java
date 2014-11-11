@@ -75,6 +75,20 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	}
 	
 	/**
+	 * 判断是否为{@code Named}}注入点
+	 * @param annos
+	 * @return
+	 * @creatTime 下午8:07:16
+	 * @author Eddy
+	 */
+	private boolean named(Annotation[][] annos) {
+		for (Annotation[] ann : annos) {
+			if (named(ann)) return true;
+		}
+		return false;
+	}
+	
+	/**
 	 * 构造函数
 	 * @creatTime 下午3:44:05
 	 * @author Eddy
