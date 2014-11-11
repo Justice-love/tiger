@@ -7,6 +7,7 @@ package org.eddy.tiger.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -44,6 +45,7 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 	AbstractContext singleton = new SingletonContext();
 
 	AbstractContext request = new RequestContext();
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -57,7 +59,7 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 		if (scop.equals(Singleton.class)) {
 			checkBeanName(bean, singleton);
 			singleton.addBean(bean);
-		} else if (scop.equals(Request.class)){
+		} else if (scop.equals(Request.class)) {
 			checkBeanName(bean, request);
 			request.addBean(bean);
 		}
@@ -66,8 +68,10 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 
 	private <T> void checkBeanName(TigerBean<T> bean, AbstractContext context) {
 		TigerBean<?> b = context.getByName(bean.getName());
-		if (null != b) throw new IllegalArgumentException("bean名字重复");
+		if (null != b)
+			throw new IllegalArgumentException("bean名字重复");
 	}
+
 	/**
 	 * 获取scop属性
 	 * 
@@ -100,38 +104,44 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 	public Object getReference(Bean<?> bean, Type beanType, CreationalContext<?> ctx) {
 		try {
 			Class<? extends Annotation> scop = bean.getScope();
-			AbstractContext con = (AbstractContext)getContext(scop);
-			if (null == con) throw new IllegalArgumentException("未实现的scop");
+			AbstractContext con = (AbstractContext) getContext(scop);
+			if (null == con)
+				throw new IllegalArgumentException("未实现的scop");
 			Object obj = con.get(bean);
 			Set<InjectionPoint> points = bean.getInjectionPoints();
 			for (InjectionPoint point : points) {
-				if(!checkPoint(point)) continue;
-				//更新注入点状态
+				if (!checkPoint(point))
+					continue;
+				// 更新注入点状态
 				updatePointState(point);
 				if (point instanceof FieldInjectionPoint) {
 					Object param = getInjectableReference(point, con.getCreationalContext());
 					Field f = (Field) point.getMember();
 					f.set(obj, param);
-					//重新释放注入点, 以便后续使用
+					// 重新释放注入点, 以便后续使用
 					((AbstractInjectionPoint) point).setState(AbstractInjectionPoint.OPEN);
 				}
 				if (point instanceof MethodInjectionPoint) {
 					Method m = (Method) point.getMember();
 					Object[] params = getInjectableReferenceForCallable(point, con.getCreationalContext());
 					m.invoke(obj, params);
-					//重新释放注入点, 以便后续使用
+					// 重新释放注入点, 以便后续使用
 					((AbstractInjectionPoint) point).setState(AbstractInjectionPoint.OPEN);
 				}
 			}
 			return obj;
-		} catch (Exception e) {
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
-			return null;
+			throw new IllegalArgumentException("反射调用权限验证失败", e);
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+			throw new IllegalArgumentException("方法调用失败", e);
 		}
 	}
 
 	/**
 	 * 更新注入点状态
+	 * 
 	 * @param point
 	 * @creatTime 下午3:56:39
 	 * @author Eddy
@@ -143,6 +153,7 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 
 	/**
 	 * 检查注入点状态方法
+	 * 
 	 * @param point
 	 * @return true:可以执行注入, false: 不可执行注入
 	 * @creatTime 下午1:55:16
@@ -222,7 +233,9 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.enterprise.inject.spi.BeanManager#getBeans(java.lang.String)
 	 */
 	@Override
