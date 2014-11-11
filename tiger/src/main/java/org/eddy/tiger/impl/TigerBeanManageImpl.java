@@ -180,6 +180,7 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 	@Override
 	public Object getInjectableReference(InjectionPoint ij, CreationalContext ctx) {
 		TigerBean<?> in = (TigerBean<?>) ((AbstractInjectionPoint) ij).getBean(ctx, ij.getType());
+		if (null == in) throw new IllegalArgumentException("未获取Bean实例 , 请检查注解配置");
 		TigerCreationalContext context = (TigerCreationalContext) ctx;
 		return in == null ? null : getReference(in);
 	}
