@@ -12,16 +12,20 @@ import java.util.Set;
 import javax.enterprise.inject.spi.AnnotatedCallable;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 
+import org.apache.commons.lang3.StringUtils;
+import org.eddy.tiger.annotated.AnnotatedName;
+
 /**
  * @author Eddy
  * 
  */
 @SuppressWarnings("all")
-public class AnnotatedParameterImpl<X> implements AnnotatedParameter<X> {
+public class AnnotatedParameterImpl<X> implements AnnotatedParameter<X>, AnnotatedName{
 	private AnnotatedCallable<X> callable;
 	private int index;
 	private Type type;
 	private Set<Annotation> annotations;
+	private String name;
 	/**
 	 * 构造函数
 	 * 
@@ -123,6 +127,30 @@ public class AnnotatedParameterImpl<X> implements AnnotatedParameter<X> {
 	@Override
 	public AnnotatedCallable<X> getDeclaringCallable() {
 		return this.callable;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eddy.tiger.annotated.AnnotatedName#getAnnotatedName()
+	 */
+	@Override
+	public String getAnnotatedName() {
+		return this.name;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eddy.tiger.annotated.AnnotatedName#setAnnotatedName(java.lang.String)
+	 */
+	@Override
+	public void setAnnotatedName(String name) {
+		this.name = name;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eddy.tiger.annotated.AnnotatedName#isNamed()
+	 */
+	@Override
+	public boolean isNamed() {
+		return !StringUtils.isEmpty(this.name);
 	}
 	
 }

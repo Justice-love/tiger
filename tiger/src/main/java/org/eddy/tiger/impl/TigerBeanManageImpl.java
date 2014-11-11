@@ -179,10 +179,19 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 	 */
 	@Override
 	public Object getInjectableReference(InjectionPoint ij, CreationalContext ctx) {
-		TigerBean<?> in = (TigerBean<?>) ((AbstractInjectionPoint) ij).getBean(ctx, ij.getType());
-		if (null == in) throw new IllegalArgumentException("未获取Bean实例 , 请检查注解配置");
-		TigerCreationalContext context = (TigerCreationalContext) ctx;
+//		TigerBean<?> in = (TigerBean<?>) ((AbstractInjectionPoint) ij).getBean(ctx, ij.getType());
+//		if (null == in) throw new IllegalArgumentException("未获取Bean实例 , 请检查注解配置");
+		TigerBean<?> in = getBean(ij, ctx, ij.getType());
 		return in == null ? null : getReference(in);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eddy.tiger.TigerBeanManage#getBean(org.eddy.tiger.point.AbstractInjectionPoint, javax.enterprise.context.spi.CreationalContext, java.lang.reflect.Type)
+	 */
+	public TigerBean<?> getBean(InjectionPoint ij, CreationalContext ctx, Type type) {
+		TigerBean<?> in = (TigerBean<?>) ((AbstractInjectionPoint) ij).getBean(ctx, type);
+		if (null == in) throw new IllegalArgumentException("未获取Bean实例 , 请检查注解配置");
+		return in;
 	}
 
 	/*
@@ -228,7 +237,9 @@ public class TigerBeanManageImpl extends TigerBeanManage {
 		TigerCreationalContext context = (TigerCreationalContext) ctx;
 		for (Object o : params) {
 			AnnotatedParameter ap = (AnnotatedParameter) o;
-			TigerBean<?> in = (TigerBean<?>) ((AbstractInjectionPoint) ij).getBean(ctx, ap.getBaseType());
+//			TigerBean<?> in = (TigerBean<?>) ((AbstractInjectionPoint) ij).getBean(ctx, ap.getBaseType());
+//			if (null == in) throw new IllegalArgumentException("未获取Bean实例 , 请检查注解配置");
+			TigerBean<?> in = getBean(ij, ctx, ap.getBaseType());
 			result[ap.getPosition()] = in == null ? null : getReference(in);
 		}
 		return result;

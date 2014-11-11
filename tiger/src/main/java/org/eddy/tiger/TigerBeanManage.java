@@ -32,6 +32,8 @@ import javax.enterprise.inject.spi.Interceptor;
 import javax.enterprise.inject.spi.ObserverMethod;
 import javax.enterprise.inject.spi.ProducerFactory;
 
+import org.eddy.tiger.point.AbstractInjectionPoint;
+
 /**
  * @author Eddy
  * 
@@ -44,6 +46,8 @@ public abstract class TigerBeanManage implements BeanManager {
 	public abstract <T> T getReference(Bean<T> bean);
 	
 	public abstract Object[] getInjectableReferenceForCallable(InjectionPoint ij, CreationalContext ctx);
+	
+	public abstract TigerBean<?> getBean(InjectionPoint ij, CreationalContext ctx, Type type);
 	
 	/*
 	 * (non-Javadoc)
