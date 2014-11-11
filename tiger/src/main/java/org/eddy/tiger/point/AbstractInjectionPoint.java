@@ -16,6 +16,7 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Qualifier;
 
+import org.eddy.tiger.annotated.impl.AnnotatedFieldImpl;
 import org.eddy.tiger.context.TigerCreationalContext;
 
 /**
@@ -90,7 +91,20 @@ public abstract class AbstractInjectionPoint implements InjectionPoint{
 		return null;
 	}
 	
+	/**
+	 * 匹配对应的bean实例
+	 * @param ctx
+	 * @param type
+	 * @return
+	 * @creatTime 下午8:45:20
+	 * @author Eddy
+	 */
 	public Bean<?> getBean(CreationalContext<?> ctx, Type type) {
+		if (this instanceof FieldInjectionPoint) {
+			FieldInjectionPoint point = (FieldInjectionPoint) this;
+			AnnotatedFieldImpl<?> af = (AnnotatedFieldImpl<?>) point.getAnnotated();
+			return af.isNamed() ? (Bean<?>) ((TigerCreationalContext<?>) ctx).get(af.getAnnotatedName(), type) : (Bean<?>) ((TigerCreationalContext<?>) ctx).get(null, type);
+		}
 		return (Bean<?>) ((TigerCreationalContext<?>) ctx).get(null, type);
 	}
 

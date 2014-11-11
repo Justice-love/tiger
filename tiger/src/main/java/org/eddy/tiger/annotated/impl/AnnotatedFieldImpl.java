@@ -146,7 +146,7 @@ public class AnnotatedFieldImpl<X> implements AnnotatedField<X>, AnnotatedName {
 	 */
 	@Override
 	public boolean isNamed() {
-		return StringUtils.isEmpty(this.name);
+		return !StringUtils.isEmpty(this.name);
 	}
 
 }

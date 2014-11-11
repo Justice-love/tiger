@@ -29,7 +29,7 @@ public interface AnnotatedName {
 	
 	/**
 	 * 是否添加了{@code Named}}注解
-	 * @return
+	 * @return true:定义了名称； false：未定义名称
 	 * @creatTime 下午8:15:41
 	 * @author Eddy
 	 */
