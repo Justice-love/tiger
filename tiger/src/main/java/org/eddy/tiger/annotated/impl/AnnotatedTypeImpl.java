@@ -81,6 +81,8 @@ public class AnnotatedTypeImpl<X> implements AnnotatedType<X> {
 	 * @creatTime 下午8:07:16
 	 * @author Eddy
 	 */
+	@SuppressWarnings("unused")
+	@Deprecated
 	private boolean named(Annotation[][] annos) {
 		for (Annotation[] ann : annos) {
 			if (named(ann)) return true;
